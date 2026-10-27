@@ -6,9 +6,11 @@ import os
 from pathlib import Path
 
 
+# Resolve relative to this installed module so a clone on another machine
+# does not depend on a CSV outside the repository.
+BUNDLED_PARAMETER_FILE = Path(__file__).resolve().parent / "data" / "p1_parameters_old_vs_new.csv"
 PARAMETER_FILE = Path(os.environ.get(
-    "P_PACE_PARAMETERS_CSV",
-    str(Path(__file__).resolve().parents[6] / "p1_parameters_old_vs_new.csv"),
+    "P_PACE_PARAMETERS_CSV", str(BUNDLED_PARAMETER_FILE),
 )).expanduser().resolve()
 JOINT_NAME_MAP = {
     f"{side}_{joint}": f"{side}_{joint}_{'joint' if (side, joint) == ('left', 'knee_pitch') else 'link'}"

@@ -79,7 +79,7 @@ python scripts/rsl_rl/play.py --task Unitree-P-G1Rewards-PACE \
 
 ## PACE 参数与 URDF
 
-训练默认读取实际识别文件 `/home/pc/PACE_P1/p1_parameters_old_vs_new.csv` 的“新版”列；项目内同名 CSV 是创建时的参考快照。加载时检查名称、单位、重复项、有限数值及 12 个关节参数的完整性。可以通过 `P_PACE_PARAMETERS_CSV` 指定另一个 CSV。
+训练默认读取仓库内 `source/unitree_rl_lab/unitree_rl_lab/assets/robots/data/p1_parameters_old_vs_new.csv` 的“新版”列，路径相对于参数加载模块解析，克隆到其他电脑后无需额外放置父目录 CSV。该文件已纳入 Git，且与原 `/home/pc/PACE_P1/p1_parameters_old_vs_new.csv` 的参数一致。加载时检查名称、单位、重复项、有限数值及 12 个关节参数的完整性。可以通过 `P_PACE_PARAMETERS_CSV` 指定另一个 CSV。
 
 URDF 已对齐为 `/home/pc/unitree_usd/urdf_803_nobattery/urdf/p1.urdf`。可通过 `P_ROBOT_URDF` 指定其他文件；任务初始化会核对其 12 个活动关节与识别参数映射。
 

@@ -4,6 +4,7 @@ import argparse
 import ast
 from copy import deepcopy
 import faulthandler
+import os
 from importlib import import_module
 import importlib.util
 from pathlib import Path
@@ -33,7 +34,7 @@ from isaaclab.utils.types import ArticulationActions
 import unitree_rl_lab.tasks
 from unitree_rl_lab.assets.robots.p_pace_parameters import (
     JOINT_NAME_MAP, P1_DELAY_STEPS, P1_FITTED_DELAY, P1_MOTOR_CONFIG_SOURCE,
-    P1_MOTOR_LIMITS, P1_MOTOR_LIMITS_BY_JOINT, P1_PARAMETERS, load_pace_parameters,
+    BUNDLED_PARAMETER_FILE, P1_MOTOR_LIMITS, P1_MOTOR_LIMITS_BY_JOINT, P1_PARAMETERS, load_pace_parameters,
 )
 from unitree_rl_lab.assets.robots.pace_actuator import PaceDCMotor, PaceDCMotorCfg
 from unitree_rl_lab.tasks.locomotion.robots.p_pace.velocity_env_cfg import PEnvCfg, PRewardsCfg
@@ -273,7 +274,9 @@ def check_physics():
 
 
 try:
-    assert load_pace_parameters(PROJECT.parent / "p1_parameters_old_vs_new.csv")[0] == P1_PARAMETERS
+    assert BUNDLED_PARAMETER_FILE.is_file()
+    if not os.environ.get("P_PACE_PARAMETERS_CSV"):
+        assert load_pace_parameters(BUNDLED_PARAMETER_FILE)[0] == P1_PARAMETERS
     check_rewards_and_curricula()
     check_identification_reference()
     check_actuator()
