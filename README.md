@@ -1,5 +1,13 @@
 # Unitree RL Lab
 
+P1 的环境配置已统一到 [p_pace/velocity_env_cfg.py](source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/robots/p_pace/velocity_env_cfg.py)。
+文件前半部分完整定义当前 **TrueLiftSmooth** 任务的场景、事件、命令、动作、观测、奖励、终止条件、课程以及训练/播放环境；历史任务的差异集中在文件末尾。
+当前调参请直接修改该文件的 `RewardsCfg`、`CommandsCfg`、`ActionsCfg` 等类，配置入口见 [P_TRUE_LIFT_SMOOTH.md](P_TRUE_LIFT_SMOOTH.md)。
+
+本目录新增了 P 机器人任务 **`Unitree-P-G1Rewards-PACE`**：使用宇树官方 G1 奖励与 PPO、`robot-p` 中带步态相位的 P 课程，以及 PACE 识别后的电机模型。训练入口、参数来源和验证结果见 [P_TRAINING.md](P_TRAINING.md)。
+针对站立局部最优，新增行走任务 **`Unitree-P-G1Rewards-PACE-Walk`**，其奖励修正、训练与定速评估见 [P_WALKING_V2.md](P_WALKING_V2.md)。
+按宇树 G1 域随机化另设行走对照任务 **`Unitree-P-G1Rewards-PACE-Walk-G1Events`**，训练命令和差异见 [G1_EVENTS_WALK.md](G1_EVENTS_WALK.md)。
+
 [![IsaacSim](https://img.shields.io/badge/IsaacSim-5.1.0-silver.svg)](https://docs.omniverse.nvidia.com/isaacsim/latest/overview.html)
 [![Isaac Lab](https://img.shields.io/badge/IsaacLab-2.3.0-silver)](https://isaac-sim.github.io/IsaacLab)
 [![License](https://img.shields.io/badge/license-Apache2.0-yellow.svg)](https://opensource.org/license/apache-2-0)

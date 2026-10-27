@@ -12,6 +12,8 @@ import gymnasium as gym
 import pathlib
 import sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "source" / "unitree_rl_lab"))
+
 sys.path.insert(0, f"{pathlib.Path(__file__).parent.parent}")
 from list_envs import import_packages  # noqa: F401
 
@@ -23,6 +25,7 @@ for task_spec in gym.registry.values():
         tasks.append(task_spec.id)
 
 import argparse
+import math
 
 import argcomplete
 
@@ -40,6 +43,10 @@ parser.add_argument("--num_envs", type=int, default=None, help="Number of enviro
 parser.add_argument("--task", type=str, default=None, choices=tasks, help="Name of the task.")
 parser.add_argument("--seed", type=int, default=None, help="Seed used for the environment")
 parser.add_argument("--max_iterations", type=int, default=None, help="RL Policy training iterations.")
+parser.add_argument("--init_checkpoint", type=str, default=None,
+                    help="Initialize policy/value weights for a new run; optimizer and iteration start fresh.")
+parser.add_argument("--init_noise_std", type=float, default=None,
+                    help="Optional exploration std after --init_checkpoint, within the task's noise bounds.")
 parser.add_argument(
     "--distributed", action="store_true", default=False, help="Run training with multiple GPUs or nodes."
 )
@@ -49,6 +56,15 @@ cli_args.add_rsl_rl_args(parser)
 AppLauncher.add_app_launcher_args(parser)
 argcomplete.autocomplete(parser)
 args_cli, hydra_args = parser.parse_known_args()
+if args_cli.init_checkpoint:
+    if args_cli.resume:
+        parser.error("--init_checkpoint and --resume are mutually exclusive")
+    args_cli.init_checkpoint = str(pathlib.Path(args_cli.init_checkpoint).expanduser().resolve())
+    if not pathlib.Path(args_cli.init_checkpoint).is_file():
+        parser.error(f"Initialization checkpoint does not exist: {args_cli.init_checkpoint}")
+if args_cli.init_noise_std is not None:
+    if not args_cli.init_checkpoint or not math.isfinite(args_cli.init_noise_std) or args_cli.init_noise_std <= 0:
+        parser.error("--init_noise_std requires --init_checkpoint and a finite positive std")
 
 # always enable cameras to record video
 if args_cli.video:
@@ -92,7 +108,7 @@ import shutil
 import torch
 from datetime import datetime
 
-from rsl_rl.runners import OnPolicyRunner  # TODO: Consider printing the experiment name in the terminal.
+from unitree_rl_lab.utils.rsl_rl_runner import make_on_policy_runner, initialize_policy_for_finetuning
 
 import isaaclab_tasks  # noqa: F401
 from isaaclab.envs import (
@@ -122,10 +138,17 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     """Train with RSL-RL agent."""
     # override configurations with non-hydra CLI arguments
     agent_cfg = cli_args.update_rsl_rl_cfg(agent_cfg, args_cli)
+    if args_cli.init_checkpoint and (agent_cfg.resume or agent_cfg.algorithm.class_name != "PPO"):
+        raise ValueError("Weight initialization requires PPO and a new run without resume")
     env_cfg.scene.num_envs = args_cli.num_envs if args_cli.num_envs is not None else env_cfg.scene.num_envs
     agent_cfg.max_iterations = (
         args_cli.max_iterations if args_cli.max_iterations is not None else agent_cfg.max_iterations
     )
+    if args_cli.init_checkpoint:
+        # A new reward objective should not immediately drive a standing policy
+        # with the from-scratch adaptive 1e-3 optimizer settings.
+        agent_cfg.algorithm.learning_rate = min(agent_cfg.algorithm.learning_rate, 1e-4)
+        agent_cfg.algorithm.schedule = "fixed"
 
     # set the environment seed
     # note: certain randomizations occur in the environment initialization so we set the seed here
@@ -181,18 +204,25 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     env = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
 
     # create runner from rsl-rl
-    runner = OnPolicyRunner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
+    runner = make_on_policy_runner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
     # write git state to logs
     runner.add_git_repo_to_log(__file__)
+    initialization = None
     # load the checkpoint
     if agent_cfg.resume or agent_cfg.algorithm.class_name == "Distillation":
         print(f"[INFO]: Loading model checkpoint from: {resume_path}")
         # load previously trained model
         runner.load(resume_path)
+    elif args_cli.init_checkpoint:
+        initialization = initialize_policy_for_finetuning(runner, args_cli.init_checkpoint, args_cli.init_noise_std)
+        print(f"[INFO] Fine-tuning weights from {args_cli.init_checkpoint}; fresh optimizer, iteration 0, new curriculum.")
+        print(f"[INFO] Initialization: {initialization}")
 
     # dump the configuration into log-directory
     dump_yaml(os.path.join(log_dir, "params", "env.yaml"), env_cfg)
     dump_yaml(os.path.join(log_dir, "params", "agent.yaml"), agent_cfg)
+    if initialization is not None:
+        dump_yaml(os.path.join(log_dir, "params", "initialization.yaml"), initialization)
     export_deploy_cfg(env.unwrapped, log_dir)
     # copy the environment configuration file to the log directory
     shutil.copy(

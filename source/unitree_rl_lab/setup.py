@@ -29,6 +29,7 @@ setup(
     install_requires=INSTALL_REQUIRES,
     license="Apache 2.0",
     include_package_data=True,
+    package_data={"unitree_rl_lab": ["assets/robots/data/*.csv"]},
     python_requires=">=3.10",
     classifiers=[
         "Natural Language :: English",

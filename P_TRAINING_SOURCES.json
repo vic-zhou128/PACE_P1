@@ -1,0 +1,111 @@
+{
+  "official_repository": "https://github.com/unitreerobotics/unitree_rl_lab",
+  "official_commit": "4960b84732b0c2ec593dccbfe963fda1bcd7b1e3",
+  "snapshots": [
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/assets/robots/p.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/assets/robots/p.py",
+      "source_sha256": "84072e5af5e390f2f6dce3ea1bc13f7da15bfed9a21577a027574425ab56d2d1",
+      "target_sha256": "84072e5af5e390f2f6dce3ea1bc13f7da15bfed9a21577a027574425ab56d2d1"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/assets/robots/p_pace.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/assets/robots/p_pace.py",
+      "source_sha256": "53e11d092b194e70b477002535b652ca33cdbc01dffcb4a09687d773f8fa3b2d",
+      "target_sha256": "53e11d092b194e70b477002535b652ca33cdbc01dffcb4a09687d773f8fa3b2d"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/assets/robots/p_pace_parameters.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/assets/robots/p_pace_parameters.py",
+      "source_sha256": "6db618a43cb4e89281c49105c30fb9a306f820ee2281055da9f622ced722f651",
+      "target_sha256": "e35595e9f47b88da844125d74c61cb719aaa368435e1440fa2c1416e073911ec"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/assets/robots/pace_actuator.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/assets/robots/pace_actuator.py",
+      "source_sha256": "9f0dcd871e17a2643011acaa6779f8cc2f1850851def2057e2dd7d2901f650b4",
+      "target_sha256": "9f0dcd871e17a2643011acaa6779f8cc2f1850851def2057e2dd7d2901f650b4"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/assets/robots/data/p1_parameters_old_vs_new.csv",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/assets/robots/data/p1_parameters_old_vs_new.csv",
+      "source_sha256": "009c8b468d8821abee1acb9913bb67c6d141a2e6d4bc9d6db1ac2cb0a12ab353",
+      "target_sha256": "009c8b468d8821abee1acb9913bb67c6d141a2e6d4bc9d6db1ac2cb0a12ab353"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/utils/export_deploy_cfg.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/utils/export_deploy_cfg.py",
+      "source_sha256": "825716448f43bb0fe9e6f4d804e61bddf78231402ad5a285a42dd798f484532a",
+      "target_sha256": "acf1392affc01f98df0ede48f29ff1d4c2cba20b20ba29ff61e10c2661274fcf"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/mdp/actions.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/mdp/p_robot/actions.py",
+      "source_sha256": "731a03a9333ca25a3afa7507de924e3df3e3736a40c9c362c5e5a51421d7672d",
+      "target_sha256": "731a03a9333ca25a3afa7507de924e3df3e3736a40c9c362c5e5a51421d7672d"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/mdp/pace.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/mdp/p_robot/pace.py",
+      "source_sha256": "ad1b7ebaec3bbcf62820b5c19d8dbd1c1eb62bd4fceb7be85f19dbb7b3c67663",
+      "target_sha256": "ad1b7ebaec3bbcf62820b5c19d8dbd1c1eb62bd4fceb7be85f19dbb7b3c67663"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/mdp/commands/velocity_command.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/mdp/p_robot/velocity_command.py",
+      "source_sha256": "b767e7904362eeada37834b0d8e436824177f706c6bc39b6006cf3afd7118030",
+      "target_sha256": "b767e7904362eeada37834b0d8e436824177f706c6bc39b6006cf3afd7118030"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/mdp/curriculums.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/mdp/p_robot/curriculums.py",
+      "functions": [
+        "balanced_omni_velocity_levels",
+        "push_robot_velocity_levels"
+      ],
+      "source_sha256": "48d8f0c7af4d3aa0d56c518ea931280d23ca5f1c8ceaf74135623ac77972088b",
+      "target_sha256": "62740357dd09c92f0226f7176a25091497f8d6d2a6e192ca383f6cfb50309030"
+    },
+    {
+      "source": "/home/pc/PACE_P1/robot-p/source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/robots/p/velocity_env_cfg.py",
+      "target": "source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/robots/p_pace/velocity_env_cfg.py",
+      "classes": [
+        "RobotSceneCfg",
+        "PEventsCfg",
+        "PCommandsCfg",
+        "ActionsCfg",
+        "TerminationsCfg",
+        "PCurriculumCfg"
+      ],
+      "source_sha256": "558ff3d08d28b160e44df69a27b0d30f87cb98618775a6dc46b6448188cbbedd",
+      "target_sha256": "0549994e521aaccd87fedf0b781e65e68356f874d8d24b0cd333086b4078c5ab",
+      "original_target": "source/unitree_rl_lab/unitree_rl_lab/tasks/locomotion/robots/p_pace/reference_cfg.py",
+      "original_target_sha256": "4b4c3b537842b7982e8bcd22a448978efae0974161f1a35072fc009ea2e23c44",
+      "consolidation_note": "2026-10-19: P1 environment definitions consolidated; current task uses RobotEnvCfg/RobotPlayEnvCfg. Historical P settings remain at the end of the same file."
+    }
+  ],
+  "snapshot_hash_meaning": "source_sha256 records the source at copy time; target_sha256 records the adapted local file.",
+  "external_inputs": {
+    "identification_csv": {
+      "path": "/home/pc/PACE_P1/p1_parameters_old_vs_new.csv",
+      "sha256_at_creation": "009c8b468d8821abee1acb9913bb67c6d141a2e6d4bc9d6db1ac2cb0a12ab353"
+    },
+    "robot_urdf": {
+      "path": "/home/pc/unitree_usd/urdf_803_nobattery/urdf/p1.urdf",
+      "sha256_at_creation": "ef58c8f8c2b377987970c234506b9c78b89aa9b0a6c4aa1a3ecd161776a9cb91"
+    },
+    "identification_motor_config": {
+      "path": "/home/pc/PACE_P1/pace-sim2real/source/pace_sim2real/pace_sim2real/tasks/manager_based/pace/p1_pace_env_cfg.py",
+      "sha256_at_creation": "697b00dc0374c557cf6334e306267df669f924e0f43f20bf7c627cc42d7c65ed"
+    }
+  },
+  "task": "Unitree-P-G1Rewards-PACE",
+  "adaptations": [
+    "Official G1 reward functions and weights; only P morphology, root-height target and nonexistent arms/waist adapted.",
+    "Phased P velocity and synchronized push curricula copied from robot-p.",
+    "CSV defaults to the actual user identification file, not the bundled reference snapshot.",
+    "PACE DC curves, per-joint fitted parameters, kp=180/kd=10, encoder bias, zero training delay.",
+    "Motor gain/joint-parameter randomization disabled; original P external randomization retained.",
+    "Official five-frame observations with an explicit 0.8-second gait phase; actor=235, critic=250."
+  ]
+}

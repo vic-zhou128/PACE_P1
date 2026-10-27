@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import hashlib
 import yaml
 
 from isaaclab.assets import Articulation
@@ -34,6 +35,49 @@ def export_deploy_cfg(env: ManagerBasedRLEnv, log_dir):
     damping[joint_ids_map] = asset.data.default_joint_damping[0].detach().cpu().numpy().tolist()
     cfg["damping"] = damping.tolist()
     cfg["default_joint_pos"] = asset.data.default_joint_pos[0].detach().cpu().numpy().tolist()
+
+    from unitree_rl_lab.assets.robots.pace_actuator import PaceDCMotor
+
+    if any(isinstance(actuator, PaceDCMotor) for actuator in asset.actuators.values()):
+        from unitree_rl_lab.assets.robots.p_pace_parameters import (
+            PARAMETER_FILE,
+            P1_DELAY_STEPS,
+            P1_FITTED_DELAY,
+            P1_FITTED_DELAY_STEPS,
+            P1_IDENTIFICATION_DT_S,
+            P1_MOTOR_CONFIG_SOURCE,
+            P1_MOTOR_LIMITS_BY_JOINT,
+            P1_PARAMETERS,
+        )
+
+        encoder_bias = np.zeros(asset.num_joints)
+        for actuator in asset.actuators.values():
+            indices = actuator.joint_indices
+            if hasattr(indices, "cpu"):
+                indices = indices.cpu().numpy()
+            encoder_bias[indices] = actuator.encoder_bias[0].detach().cpu().numpy()
+        physical_home = asset.data.default_joint_pos[0].detach().cpu().numpy()
+        # This field is consumed by deployment together with encoder positions.
+        cfg["default_joint_pos"] = (physical_home - encoder_bias).tolist()
+        cfg["motor_identification"] = {
+            "source": str(PARAMETER_FILE),
+            "source_sha256": hashlib.sha256(PARAMETER_FILE.read_bytes()).hexdigest(),
+            "joint_names": list(asset.joint_names),
+            "joint_sdk_names": list(joint_sdk_names),
+            "parameters_by_joint_name": P1_PARAMETERS,
+            "physical_default_joint_pos": physical_home.tolist(),
+            "encoder_bias": encoder_bias.tolist(),
+            "encoder_convention": "q_encoder = q_sim - bias; real encoder inputs need no second bias subtraction",
+            "fitted_delay_steps_raw": P1_FITTED_DELAY,
+            "identification_dt_s": P1_IDENTIFICATION_DT_S,
+            "identification_discrete_delay_steps": P1_FITTED_DELAY_STEPS,
+            "applied_delay_steps": P1_DELAY_STEPS,
+            "physics_dt_s": env.cfg.sim.dt,
+            "applied_delay_s": P1_DELAY_STEPS * env.cfg.sim.dt,
+            "saturation_model": "DCMotor: four-quadrant linear torque-speed saturation, matching P1 PACE",
+            "motor_limits_source": P1_MOTOR_CONFIG_SOURCE,
+            "motor_limits_by_joint_name": P1_MOTOR_LIMITS_BY_JOINT,
+        }
 
     # --- commands ---
     cfg["commands"] = {}
@@ -112,6 +156,10 @@ def export_deploy_cfg(env: ManagerBasedRLEnv, log_dir):
         os.makedirs(os.path.dirname(filename), exist_ok=True)
     if not isinstance(cfg, dict):
         cfg = class_to_dict(cfg)
+    # Retain the full identification precision in the reproducibility metadata.
+    identification = cfg.pop("motor_identification", None)
     cfg = format_value(cfg)
+    if identification is not None:
+        cfg["motor_identification"] = identification
     with open(filename, "w") as f:
         yaml.dump(cfg, f, default_flow_style=None, sort_keys=False)
